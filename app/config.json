@@ -1,8 +1,9 @@
 {
   "resources": {
     "models": {
-      "scooter": {
-        "path": "Scooter/Scooter.obj"
+      "corridor": {
+        "path": "corridor/corridor.obj",
+        "flip_uvs": true
       }
     }
   },
