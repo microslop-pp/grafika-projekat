@@ -1,6 +1,8 @@
 
 #include "engine/core/Controller.hpp"
+#include "engine/graphics/Camera.hpp"
 #include "engine/platform/Input.hpp"
+#include "glm/ext/vector_float3.hpp"
 #include <MainController.hpp>
 #include <memory>
 #include <spdlog/spdlog.h>
@@ -62,13 +64,15 @@ namespace app {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         auto graphics = engine::graphics::GraphicsController::get<engine::graphics::GraphicsController>();
         auto camera = graphics->camera();
+
+        glm::vec3 flat_front = glm::normalize(glm::vec3(camera->Front.x, 0.0f, camera->Front.z));
         
         float dt = platform->dt();
         if(platform->key(engine::platform::KeyId::KEY_W).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::FORWARD, dt);
+            camera->Position += flat_front * camera->MovementSpeed * dt;
         }
         if(platform->key(engine::platform::KeyId::KEY_S).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::BACKWARD, dt);
+            camera->Position -= flat_front * camera->MovementSpeed * dt;
         }
         if(platform->key(engine::platform::KeyId::KEY_A).is_down()) {
             camera->move_camera(engine::graphics::Camera::Movement::LEFT, dt);
