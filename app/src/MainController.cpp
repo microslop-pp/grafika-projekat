@@ -1,6 +1,8 @@
-#include "engine/graphics/Camera.hpp"
+
+#include "engine/core/Controller.hpp"
 #include "engine/platform/Input.hpp"
 #include <MainController.hpp>
+#include <memory>
 #include <spdlog/spdlog.h>
 #include <engine/resources/ResourcesController.hpp>
 #include <engine/graphics/OpenGL.hpp>
@@ -10,8 +12,22 @@
 auto rotation_angle = 0.0f;
 
 namespace app {
+
+    class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
+    public:
+        void on_mouse_move(engine::platform::MousePosition position) override;
+    };
+
+    void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
+        auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
+        camera->rotate_camera(position.dx, position.dy);
+    }
+
     void MainController::initialize() {
         spdlog::info("MainController initialized!");
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        platform->register_platform_event_observer(std::make_unique<MainPlatformEventObserver>());
+        platform->set_enable_cursor(false);
         engine::graphics::OpenGL::enable_depth_testing();
     }
 
@@ -26,8 +42,7 @@ namespace app {
 
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
-        glm::mat4 view = glm::rotate(graphics->camera()->view_matrix(), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        shader->set_mat4("view", view);
+        shader->set_mat4("view", graphics->camera()->view_matrix());
 
 
         rotation_angle += 0.5f; // Adjust this value to change speed
@@ -36,7 +51,7 @@ namespace app {
         }
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 6.0f));
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.0f));
         model = glm::rotate(model, glm::radians(rotation_angle), glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.3f));
         shader->set_mat4("model", model);
