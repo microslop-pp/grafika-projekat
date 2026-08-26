@@ -1,6 +1,9 @@
 {
   "resources": {
     "models": {
+      "scooter": {
+        "path": "Scooter/Scooter.obj"
+      }
     }
   },
   "window": {
