@@ -18,9 +18,15 @@ namespace app {
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
     public:
         void on_mouse_move(engine::platform::MousePosition position) override;
+    private:
+        int m_skip_frames = 2; // for some reason mouse position jumps for the first 2 frames
     };
 
     void MainPlatformEventObserver::on_mouse_move(engine::platform::MousePosition position) {
+        if (m_skip_frames > 0) {
+            m_skip_frames--;
+            return;
+        }
         auto camera = engine::core::Controller::get<engine::graphics::GraphicsController>()->camera();
         camera->rotate_camera(position.dx, position.dy);
     }
