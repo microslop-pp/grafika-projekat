@@ -11,5 +11,3 @@ class MyApp : public engine::core::App {
 } // app
 
 #endif //MYAPP_HPP
-
-//find app/ -type f \( -name "*.hpp" -o -name "*.cpp" -o -name "CMakeLists.txt" -o -name "*.json" \) -exec sh -c 'echo "=== {} ===" && cat "{}" && echo "\n"' \; > project_context.txt
