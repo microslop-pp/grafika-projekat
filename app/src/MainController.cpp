@@ -31,6 +31,14 @@ namespace app {
         camera->rotate_camera(position.dx, position.dy);
     }
 
+    bool MainController::loop() {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        if (platform->key(engine::platform::KEY_ESCAPE).is_down()) {
+            return false;
+        }
+        return true;
+    }
+
     void MainController::initialize() {
         spdlog::info("MainController initialized!");
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();

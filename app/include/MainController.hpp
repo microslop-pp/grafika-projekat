@@ -8,6 +8,8 @@ namespace app {
 class MainController : public engine::core::Controller {
     void initialize() override;
 
+    bool loop() override;
+
     void update_camera();
 
     void draw_corridor();
