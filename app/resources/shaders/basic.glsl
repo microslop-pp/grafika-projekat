@@ -12,10 +12,11 @@ out vec3 FragPos;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat3 normal_matrix;
 
 void main() {
     FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = aNormal;
+    Normal = normal_matrix * aNormal;
     TexCoords = aTexCoords;
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
@@ -26,9 +27,35 @@ void main() {
 out vec4 FragColor;
 
 in vec2 TexCoords;
+in vec3 Normal;
+in vec3 FragPos;
 
 uniform sampler2D texture_diffuse1;
+uniform vec3 light_pos;
+uniform vec3 light_color;
+uniform vec3 view_pos;
 
 void main() {
-    FragColor = vec4(texture(texture_diffuse1, TexCoords).rgb, 1.0);
+    vec3 object_color = texture(texture_diffuse1, TexCoords).rgb;
+
+    //ambient
+    float ambient_strength = 0.45;
+    vec3 ambient = ambient_strength * light_color;
+
+    //diff
+    vec3 norm = normalize(Normal);
+    vec3 light_dir = normalize(light_pos - FragPos);
+    float diff = max(dot(norm, light_dir), 0.0);
+    vec3 diffuse = diff * light_color;
+
+    //spec
+    float specular_strength = 0.5;
+    vec3 view_dir = normalize(view_pos - FragPos);
+    vec3 reflect_dir = reflect(-light_dir, norm);
+    float spec = pow(max(dot(view_dir, reflect_dir), 0.0), 32);
+    vec3 specular = specular_strength * spec * light_color;
+
+    //final
+    vec3 result = (ambient + diffuse + specular) * object_color;
+    FragColor = vec4(result, 1.0);
 }

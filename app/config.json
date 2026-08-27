@@ -4,6 +4,9 @@
       "corridor": {
         "path": "corridor/corridor.obj",
         "flip_uvs": true
+      },
+      "light_cube": {
+        "path": "light_cube/light_cube.obj"
       }
     }
   },

@@ -47,6 +47,27 @@ namespace app {
         engine::graphics::OpenGL::enable_depth_testing();
     }
 
+    void MainController::draw_light_marker() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        engine::resources::Model* light_cube = resources->model("light_cube");
+        engine::resources::Shader* shader = resources->shader("basic");
+
+        auto light_pos = glm::vec3(2.0f, 3.0f, -2.0f);
+
+        shader->use();
+        shader->set_mat4("projection", graphics->projection_matrix());
+        shader->set_mat4("view", graphics->camera()->view_matrix());
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, light_pos);
+        model = glm::scale(model, glm::vec3(0.1f));
+        shader->set_mat4("model", model);
+        shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
+
+        light_cube->draw(shader);
+    }
+
     void MainController::draw_corridor() {
         // Model
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
@@ -71,7 +92,21 @@ namespace app {
         model = glm::rotate(model, glm::radians(rotation_angle), glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.3f));
         shader->set_mat4("model", model);
+
+        shader->set_vec3("light_pos", glm::vec3(2.0f, 3.0f, -2.0f));
+        shader->set_vec3("light_color", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("view_pos", graphics->camera()->Position);
+        shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
+
         corridor->draw(shader);
+    }
+
+    void MainController::draw_skybox() {
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+        auto skybox = resources->skybox("skybox");
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto shader = resources->shader("skyboxshader");
+        graphics->draw_skybox(shader, skybox);
     }
 
     void MainController::update_camera() {
@@ -95,10 +130,10 @@ namespace app {
             camera->move_camera(engine::graphics::Camera::Movement::RIGHT, dt);
         }
         if(platform->key(engine::platform::KeyId::KEY_LEFT_SHIFT).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::DOWN, dt);
+            camera->Position -= glm::vec3(0.0f, 1.0f, 0.0f) * camera->MovementSpeed * dt;
         }
         if(platform->key(engine::platform::KeyId::KEY_SPACE).is_down()) {
-            camera->move_camera(engine::graphics::Camera::Movement::UP, dt);
+            camera->Position -= glm::vec3(0.0f, -1.0f, 0.0f) * camera->MovementSpeed * dt;
         }
     }
 
@@ -108,11 +143,12 @@ namespace app {
 
     void MainController::begin_draw() {
         engine::graphics::OpenGL::clear_buffers();
-
     }
 
     void MainController::draw() {
         draw_corridor();
+        draw_light_marker();
+        draw_skybox();
     }
 
     void MainController::end_draw() {

@@ -1,14 +1,13 @@
-# {NAME-OF-THE-PROJECT}
+# {PROJECT2}
 
-{INDEX} - {STUDENT-FULL-NAME}  
+762022 - don't want my name indexed by search engines and scraped by clankers
 {PROJECT DESCRIPTION}
 
 ## Controls
 
-{BUTTON1} -> {ACTION1}  
-{BUTTON2} -> {ACTION2}  
-...  
-{BUTTONN} -> {ACTIONN}
+{escape} -> {quit}  
+{wasd} -> {move around}  
+{move mouse} -> {look around}  
 
 ## Features
 
@@ -36,7 +35,7 @@
 
 ## Models:
 
-[link1]   
+[https://kenney.nl/assets/modular-cave-kit]   
 [link2]
 
 ## Textures
@@ -44,4 +43,6 @@
 [link1]  
 [link2]
 
-{OTHER-RESOURCES}
+## Skyboxes
+
+https://www.magnific.com/free-photo/field-with-clouds_977520.htm#fromView=keyword&page=1&position=0&uuid=c393aaa6-0c97-4dbc-9ce6-97d29cd81040&track=ais_hybrid&query=Skybox
