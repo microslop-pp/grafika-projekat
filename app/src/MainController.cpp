@@ -47,13 +47,32 @@ namespace app {
         engine::graphics::OpenGL::enable_depth_testing();
     }
 
+    void MainController::update_light() {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        float dt = platform->dt();
+        float speed = 3.0f;
+
+        if (platform->key(engine::platform::KeyId::KEY_RIGHT).is_down()) {
+            m_light_pos.x += speed * dt;
+        }
+        if (platform->key(engine::platform::KeyId::KEY_LEFT).is_down()) {
+            m_light_pos.x -= speed * dt;
+        }
+        if (platform->key(engine::platform::KeyId::KEY_UP).is_down()) {
+            m_light_pos.z -= speed * dt;
+        }
+        if (platform->key(engine::platform::KeyId::KEY_DOWN).is_down()) {
+            m_light_pos.z += speed * dt;
+        }
+    }
+
     void MainController::draw_light_marker() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
         engine::resources::Model* light_cube = resources->model("light_cube");
         engine::resources::Shader* shader = resources->shader("basic");
 
-        auto light_pos = glm::vec3(2.0f, 3.0f, -2.0f);
+        auto light_pos = m_light_pos;
 
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
@@ -93,7 +112,7 @@ namespace app {
         model = glm::scale(model, glm::vec3(0.3f));
         shader->set_mat4("model", model);
 
-        shader->set_vec3("light_pos", glm::vec3(2.0f, 3.0f, -2.0f));
+        shader->set_vec3("light_pos", m_light_pos);
         shader->set_vec3("light_color", glm::vec3(1.0f, 1.0f, 1.0f));
         shader->set_vec3("view_pos", graphics->camera()->Position);
         shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
@@ -139,6 +158,7 @@ namespace app {
 
     void MainController::update() {
         update_camera();
+        update_light();
     }
 
     void MainController::begin_draw() {
