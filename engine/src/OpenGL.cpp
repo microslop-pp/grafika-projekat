@@ -80,6 +80,37 @@ uint32_t OpenGL::init_skybox_cube() {
     return skybox_vao;
 }
 
+uint32_t OpenGL::init_quad() {
+    static unsigned int quad_vao = 0;
+    if (quad_vao != 0) {
+        return quad_vao;
+    }
+    float vertices[] = {
+        //positions             //texCoords
+        -1.0f,  1.0f,  0.0f, 1.0f,
+        -1.0f, -1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+
+        -1.0f,  1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f,
+    };
+    unsigned int quad_vbo = 0;
+    CHECKED_GL_CALL(glGenVertexArrays, 1, &quad_vao);
+    CHECKED_GL_CALL(glGenBuffers, 1, &quad_vbo);
+    CHECKED_GL_CALL(glBindVertexArray, quad_vao);
+    CHECKED_GL_CALL(glBindBuffer, GL_ARRAY_BUFFER, quad_vbo);
+    CHECKED_GL_CALL(glBufferData, GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+    // position location = 0
+    CHECKED_GL_CALL(glEnableVertexAttribArray, 0);
+    CHECKED_GL_CALL(glVertexAttribPointer, 0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    // texture coordinate location = 1
+    CHECKED_GL_CALL(glEnableVertexAttribArray, 1);
+    CHECKED_GL_CALL(glVertexAttribPointer, 1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    CHECKED_GL_CALL(glBindVertexArray, 0);
+    return quad_vao;
+}
+
 bool OpenGL::shader_compiled_successfully(uint32_t shader_id) {
     int success;
     CHECKED_GL_CALL(glGetShaderiv, shader_id, GL_COMPILE_STATUS, &success);

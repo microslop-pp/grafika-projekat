@@ -24,6 +24,10 @@ private:
     void update_light_event();
 
     glm::vec3 m_light_pos = glm::vec3(2.0f, 3.0f, -2.0f);
+
+    int m_post_effect = 0;
+
+    void set_effect();
     
     void initialize() override;
 

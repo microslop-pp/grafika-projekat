@@ -98,6 +98,35 @@ namespace app {
         }
     }
 
+    void MainController::set_effect() {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+
+        if (platform->key(engine::platform::KeyId::KEY_0).is_down()) {
+            m_post_effect = 0;
+            spdlog::info("effect 0");
+        }
+        if (platform->key(engine::platform::KeyId::KEY_1).is_down()) {
+            m_post_effect = 1;
+            spdlog::info("effect 1");
+        }
+        if (platform->key(engine::platform::KeyId::KEY_2).is_down()) {
+            m_post_effect = 2;
+            spdlog::info("effect 2");
+        }
+        if (platform->key(engine::platform::KeyId::KEY_3).is_down()) {
+            m_post_effect = 3;
+            spdlog::info("effect 3");
+        }
+        if (platform->key(engine::platform::KeyId::KEY_4).is_down()) {
+            m_post_effect = 4;
+            spdlog::info("effect 4");
+        }
+        if (platform->key(engine::platform::KeyId::KEY_5).is_down()) {
+            m_post_effect = 5;
+            spdlog::info("effect 5");
+        }
+    }
+
     void MainController::draw_light_marker() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -209,9 +238,12 @@ namespace app {
         update_camera();
         update_light();
         update_light_event();
+        set_effect();
     }
 
     void MainController::begin_draw() {
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        graphics->begin_post_processing();
         engine::graphics::OpenGL::clear_buffers();
     }
 
@@ -222,6 +254,16 @@ namespace app {
     }
 
     void MainController::end_draw() {
+        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
+        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
+
+        graphics->end_post_processing();
+        engine::graphics::OpenGL::clear_buffers();
+        auto *post_shader = resources->shader("postprocessing");
+        post_shader->use();
+        post_shader->set_int("effect", m_post_effect);
+        graphics->draw_post_processing(post_shader);
+
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         platform->swap_buffers();
     }

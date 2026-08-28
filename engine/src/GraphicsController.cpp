@@ -86,4 +86,25 @@ void GraphicsController::draw_skybox(const resources::Shader *shader, const reso
     CHECKED_GL_CALL(glDepthFunc, GL_LESS);// set depth function back to default
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, 0);
 }
+
+void GraphicsController::begin_post_processing() {
+    auto platform = engine::core::Controller::get<platform::PlatformController>();
+    const int width = platform->window()->width();
+    const int height = platform->window()->height();
+
+    if (m_post_processing.needs_resize(width, height)) {
+        m_post_processing.setup(width, height);
+    }
+    m_post_processing.begin();
+}
+
+void GraphicsController::end_post_processing() {
+    m_post_processing.end();
+}
+
+void GraphicsController::draw_post_processing(const resources::Shader *shader) {
+    m_post_processing.draw_quad(shader);
+}
+
+
 }// namespace engine::graphics

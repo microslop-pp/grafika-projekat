@@ -93,6 +93,9 @@ public:
     */
     static uint32_t init_skybox_cube();
 
+    // returns VAO of fullscreen quad
+    static uint32_t init_quad();
+
     /**
     * @brief Check if the shader with the `shader_id` compiled successfully.
     * @returns true if the shader compilation succeeded, false otherwise.

@@ -6,6 +6,7 @@
 #ifndef GRAPHICSCONTROLLER_HPP
 #define GRAPHICSCONTROLLER_HPP
 
+#include <engine/graphics/PostProcessing.hpp>
 #include <engine/core/Controller.hpp>
 #include <engine/graphics/Camera.hpp>
 #include <engine/platform/PlatformEventObserver.hpp>
@@ -85,6 +86,14 @@ public:
     * @brief Draws a @ref resources::Skybox with the @ref resources::Shader.
     */
     void draw_skybox(const resources::Shader *shader, const resources::Skybox *skybox);
+
+
+    void begin_post_processing();
+
+    void end_post_processing();
+
+    void draw_post_processing(const resources::Shader *shader);
+
 
     Camera *camera() {
         return &m_camera;
@@ -167,6 +176,8 @@ private:
     glm::mat4 m_projection_matrix{};
     Camera m_camera{};
     ImGuiContext *m_imgui_context{};
+
+    PostProcessing m_post_processing{};
 };
 
 /**
