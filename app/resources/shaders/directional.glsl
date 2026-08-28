@@ -30,27 +30,25 @@ in vec2 TexCoords;
 in vec3 Normal;
 in vec3 FragPos;
 
-uniform sampler2D texture_diffuse1;
-uniform vec3 light_pos;
+uniform sampler2D texture_diffuse;
 uniform vec3 light_direction;
 uniform vec3 light_color;
-uniform vec3 light_color_dir;
 uniform vec3 view_pos;
 
 void main() {
-    vec3 object_color = texture(texture_diffuse1, TexCoords).rgb;
+    vec3 object_color = texture(texture_diffuse, TexCoords).rgb;
 
     //ambient
-    float ambient_strength = 0.1;
-    vec3 ambient = ambient_strength * light_color;
+    float ambient_strength = 0.3;
+    vec3 ambient = ambient_strength * object_color;
 
-    //diff
+    //diffuse
     vec3 norm = normalize(Normal);
-    vec3 light_dir = normalize(light_pos - FragPos);
-    float diff = max(dot(norm, light_dir), 0.0);
+    vec3 light_dir = normalize(-light_direction);
+    float diff = max(dot(norm, light_dir), 0);
     vec3 diffuse = diff * light_color;
 
-    //spec
+    //specular
     float specular_strength = 0.5;
     vec3 view_dir = normalize(view_pos - FragPos);
     vec3 reflect_dir = reflect(-light_dir, norm);
@@ -59,28 +57,5 @@ void main() {
 
     //final
     vec3 result = (ambient + diffuse + specular) * object_color;
-    //FragColor = vec4(result, 1.0);
-
-
-
-    //ambient
-    float ambient_strength_dir = 0.3;
-    vec3 ambient_dir = ambient_strength_dir * light_color_dir;
-
-    //diffuse
-    vec3 norm_dir = normalize(Normal);
-    vec3 light_dir_dir = normalize(-light_direction);
-    float diff_dir = max(dot(norm_dir, light_dir_dir), 0.0);
-    vec3 diffuse_dir = diff_dir * light_color_dir;
-
-    //spec
-    float specular_strength_dir = 0.5;
-    vec3 view_dir_dir = normalize(view_pos - FragPos);
-    vec3 reflect_dir_dir = reflect(-light_dir, norm);
-    float spec_dir = pow(max(dot(view_dir_dir, reflect_dir_dir), 0.0), 32);
-    vec3 specular_dir = specular_strength_dir * spec_dir * light_color_dir;
-
-    //final
-    result += (ambient_dir + diffuse_dir + specular_dir) * object_color;
     FragColor = vec4(result, 1.0);
 }

@@ -113,7 +113,9 @@ namespace app {
         shader->set_mat4("model", model);
 
         shader->set_vec3("light_pos", m_light_pos);
-        shader->set_vec3("light_color", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("light_direction", glm::vec3(2.0f, -3.0f, 2.0f));
+        shader->set_vec3("light_color_dir", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("light_color", glm::vec3(0.0f, 1.0f, 0.0f));
         shader->set_vec3("view_pos", graphics->camera()->Position);
         shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
 
