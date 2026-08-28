@@ -7,15 +7,18 @@
 
 {escape} -> {quit}  
 {wasd} -> {move around}  
-{move mouse} -> {look around}  
+{move mouse} -> {look around}
+{arrow keys} -> {move light cube}
+{R} -> {rotate object}
+{ACTION_press_L} --- AFTER_2_SECONDS---Triggers---> {EVENT_blackout} ---> AFTER_3_SECONDS---Triggers---> {EVENT_back_to_normal}
 
 ## Features
 
 ### Fundamental:
 
-[ ] Model with lighting
-[ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
+[x] Model with lighting
+[x] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[x] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
 
 ### Group A:
 
@@ -35,7 +38,7 @@
 
 ## Models:
 
-[https://kenney.nl/assets/modular-cave-kit]   
+[https://kenney.nl]   
 [link2]
 
 ## Textures

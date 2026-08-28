@@ -1,8 +1,8 @@
 {
   "resources": {
     "models": {
-      "corridor": {
-        "path": "corridor/corridor.obj",
+      "tower_b": {
+        "path": "kenney_modular-buildings/Models/OBJ format/building-sample-tower-b.obj",
         "flip_uvs": true
       },
       "light_cube": {

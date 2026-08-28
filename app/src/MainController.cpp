@@ -11,8 +11,6 @@
 #include <engine/platform/PlatformController.hpp>
 #include <engine/graphics/GraphicsController.hpp>
 
-auto rotation_angle = 0.0f;
-
 namespace app {
 
     class MainPlatformEventObserver : public engine::platform::PlatformEventObserver {
@@ -66,6 +64,40 @@ namespace app {
         }
     }
 
+    void MainController::update_light_event() {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+        float dt = platform->dt();
+
+        if (m_light_event == IDLE && platform->key(engine::platform::KeyId::KEY_L).state() == engine::platform::Key::State::JustPressed) {
+            m_light_event = WAITINGA;
+            m_light_event_timer = 0.0f;
+            spdlog::info("waiting {}s", LIGHT_M_SECONDS);
+        }
+
+        switch (m_light_event) {
+            case WAITINGA:
+                m_light_event_timer += dt;
+                if (m_light_event_timer >= LIGHT_M_SECONDS) {
+                    m_light_intensity = 0.0f;
+                    m_light_event = WAITINGB;
+                    m_light_event_timer = 0.0f;
+                    spdlog::info("waiting {}s", LIGHT_N_SECONDS);
+                }
+                break;
+
+            case WAITINGB:
+                m_light_event_timer += dt;
+                if (m_light_event_timer >= LIGHT_N_SECONDS) {
+                    m_light_intensity = 1.0f;
+                    m_light_event = IDLE;
+                }
+                break;
+
+            case IDLE:
+                break;
+        }
+    }
+
     void MainController::draw_light_marker() {
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
@@ -87,11 +119,26 @@ namespace app {
         light_cube->draw(shader);
     }
 
-    void MainController::draw_corridor() {
+    float rotate_tower_b(float rotation_angle, bool *finished_rotation) {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+
+        if (!(*finished_rotation) || platform->key(engine::platform::KeyId::KEY_R).state() == engine::platform::Key::State::JustPressed) {
+            rotation_angle += 1.0f;
+            *finished_rotation = false;
+            if (rotation_angle >= 360.0f) {
+                rotation_angle = 0.0f;
+                *finished_rotation = true;
+            }
+        }
+
+        return rotation_angle;
+    }
+
+    void MainController::draw_tower_b() {
         // Model
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* corridor = resources->model("corridor");
+        engine::resources::Model* tower_b = resources->model("tower_b");
 
         // Shader
         engine::resources::Shader* shader = resources->shader("basic");
@@ -100,26 +147,26 @@ namespace app {
         shader->set_mat4("projection", graphics->projection_matrix());
         shader->set_mat4("view", graphics->camera()->view_matrix());
 
-
-        rotation_angle += 0.5f; // Adjust this value to change speed
-        if (rotation_angle >= 360.0f) {
-            rotation_angle -= 360.0f;
-        }
+        static float rotation_angle = 0.0f;
+        static bool finished_rotation = true;
+        
+        rotation_angle = rotate_tower_b(rotation_angle, &finished_rotation);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, -6.0f));
         model = glm::rotate(model, glm::radians(rotation_angle), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.3f));
         shader->set_mat4("model", model);
+
+        // light_color_dir is light colour for directional lighting
 
         shader->set_vec3("light_pos", m_light_pos);
         shader->set_vec3("light_direction", glm::vec3(2.0f, -3.0f, 2.0f));
-        shader->set_vec3("light_color_dir", glm::vec3(1.0f, 1.0f, 1.0f));
-        shader->set_vec3("light_color", glm::vec3(0.0f, 1.0f, 0.0f));
+        shader->set_vec3("light_color_dir", m_light_intensity * glm::vec3(1.0f, 1.0f, 1.0f));
+        shader->set_vec3("light_color", m_light_intensity * glm::vec3(0.0f, 1.0f, 0.0f));
         shader->set_vec3("view_pos", graphics->camera()->Position);
         shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
 
-        corridor->draw(shader);
+        tower_b->draw(shader);
     }
 
     void MainController::draw_skybox() {
@@ -161,6 +208,7 @@ namespace app {
     void MainController::update() {
         update_camera();
         update_light();
+        update_light_event();
     }
 
     void MainController::begin_draw() {
@@ -168,7 +216,7 @@ namespace app {
     }
 
     void MainController::draw() {
-        draw_corridor();
+        draw_tower_b();
         draw_light_marker();
         draw_skybox();
     }

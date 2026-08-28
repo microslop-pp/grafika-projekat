@@ -8,6 +8,21 @@ namespace app {
 
 class MainController : public engine::core::Controller {
 private:
+    enum LightEvent {
+        IDLE,
+        WAITINGA,
+        WAITINGB
+    };
+
+    LightEvent m_light_event = IDLE;
+    float m_light_event_timer = 0.0f;
+    float m_light_intensity = 1.0f;
+
+    static constexpr float LIGHT_M_SECONDS = 2.0f;
+    static constexpr float LIGHT_N_SECONDS = 3.0f;
+
+    void update_light_event();
+
     glm::vec3 m_light_pos = glm::vec3(2.0f, 3.0f, -2.0f);
     
     void initialize() override;
@@ -22,7 +37,7 @@ private:
 
     void update_camera();
 
-    void draw_corridor();
+    void draw_tower_b();
 
     void update() override;
 
