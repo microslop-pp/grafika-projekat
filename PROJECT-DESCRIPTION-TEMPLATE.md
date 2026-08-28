@@ -11,6 +11,7 @@
 {arrow keys} -> {move light cube}
 {R} -> {rotate object}
 {ACTION_press_L} --- AFTER_2_SECONDS---Triggers---> {EVENT_blackout} ---> AFTER_3_SECONDS---Triggers---> {EVENT_back_to_normal}
+{0-5} -> {post processing effects}
 
 ## Features
 
@@ -22,7 +23,7 @@
 
 ### Group A:
 
-[ ] Frame-buffers with post-processing   
+[x] Frame-buffers with post-processing   
 [ ] Off-screen Anti-Aliasing  
 [ ] Parallax Mapping
 [ ] Bloom with the use of HDR
