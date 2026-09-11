@@ -6,6 +6,7 @@
 #ifndef GRAPHICSCONTROLLER_HPP
 #define GRAPHICSCONTROLLER_HPP
 
+#include <engine/graphics/PointShadowMap.hpp>
 #include <engine/graphics/PostProcessing.hpp>
 #include <engine/core/Controller.hpp>
 #include <engine/graphics/Camera.hpp>
@@ -87,6 +88,11 @@ public:
     */
     void draw_skybox(const resources::Shader *shader, const resources::Skybox *skybox);
 
+    void begin_point_shadow_pass(resources::Shader *depth_shader, glm::vec3 &light_pos);
+
+    void end_point_shadow_pass();
+
+    void bind_point_shadow_map(resources::Shader *shader, int texture_unit = 1);
 
     void begin_post_processing();
 
@@ -178,6 +184,8 @@ private:
     ImGuiContext *m_imgui_context{};
 
     PostProcessing m_post_processing{};
+
+    PointShadowMap m_point_shadow_map{};
 };
 
 /**

@@ -8,7 +8,7 @@
 {escape} -> {quit}  
 {wasd} -> {move around}  
 {move mouse} -> {look around}
-{arrow keys} -> {move light cube}
+{arrow keys, -, =} -> {move light cube}
 {R} -> {rotate object}
 {ACTION_press_L} --- AFTER_2_SECONDS---Triggers---> {EVENT_blackout} ---> AFTER_3_SECONDS---Triggers---> {EVENT_back_to_normal}
 {0-5} -> {post processing effects}
@@ -30,7 +30,7 @@
 
 ### Group B:
 [ ] Deferred Shading  
-[ ] Point Shadows  
+[x] Point Shadows  
 [ ] SSAO
 
 ### Engine improvement:
@@ -40,7 +40,7 @@
 ## Models:
 
 [https://kenney.nl]   
-[link2]
+[https://free3d.com/3d-model/-rectangular-grass-patch--205749.html]
 
 ## Textures
 
