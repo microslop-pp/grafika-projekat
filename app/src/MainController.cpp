@@ -135,39 +135,6 @@ namespace app {
             spdlog::info("effect 5");
         }
     }
-    void MainController::draw_ground2() {
-        // Model
-        auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
-        auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* grass = resources->model("grass");
-
-        // Shader
-        engine::resources::Shader* shader = resources->shader("basic");
-
-        shader->use();
-        shader->set_mat4("projection", graphics->projection_matrix());
-        shader->set_mat4("view", graphics->camera()->view_matrix());
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -4.8f, -6.0f));
-        // model = glm::rotate(model, glm::radians(m_tower_rotation_angle), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.1f));
-        shader->set_mat4("model", model);
-
-        // light_color_dir is light colour for directional lighting
-
-        shader->set_vec3("light_pos", m_light_pos);
-        shader->set_vec3("light_direction", glm::vec3(2.0f, -3.0f, 2.0f));
-        shader->set_vec3("light_color_dir", m_light_intensity * glm::vec3(1.0f, 1.0f, 1.0f));
-        shader->set_vec3("light_color", m_light_intensity * glm::vec3(0.0f, 1.0f, 0.0f));
-        shader->set_vec3("view_pos", graphics->camera()->Position);
-        shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
-
-        graphics->bind_point_shadow_map(shader);
-
-        grass->draw(shader);
-    }
 
     void MainController::draw_ground() {
         // Model
@@ -239,11 +206,11 @@ namespace app {
         return rotation_angle;
     }
 
-    void MainController::draw_tower_b() {
+    void MainController::draw_tower(std::string &model_name, glm::vec3 &position, float rotation_deg) {
         // Model
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* tower_b = resources->model("tower_b");
+        engine::resources::Model* tower = resources->model(model_name);
 
         // Shader
         engine::resources::Shader* shader = resources->shader("basic");
@@ -253,8 +220,8 @@ namespace app {
         shader->set_mat4("view", graphics->camera()->view_matrix());
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -1.0f, -6.0f));
-        model = glm::rotate(model, glm::radians(m_tower_rotation_angle), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::translate(model, position);
+        model = glm::rotate(model, glm::radians(m_tower_rotation_angle + rotation_deg), glm::vec3(0.0f, 1.0f, 0.0f));
         shader->set_mat4("model", model);
 
         // light_color_dir is light colour for directional lighting
@@ -268,7 +235,17 @@ namespace app {
 
         graphics->bind_point_shadow_map(shader);
 
-        tower_b->draw(shader);
+        tower->draw(shader);
+    }
+
+    void MainController::draw_towers() {
+        int i = 0;
+        for (auto &tower : m_towers) {
+            float roatation = 0.0f;
+            if (i > 3) { roatation += 180.0f; }
+            draw_tower(tower.first, tower.second, roatation);
+            i++;
+        }
     }
 
     void MainController::draw_shadow_pass() {
@@ -276,18 +253,26 @@ namespace app {
         // Model
         auto resources = engine::core::Controller::get<engine::resources::ResourcesController>();
         auto graphics = engine::core::Controller::get<engine::graphics::GraphicsController>();
-        engine::resources::Model* tower_b = resources->model("tower_b");
 
         // Shader
         auto *depth_shader = resources->shader("point_shadow_depth");
 
         graphics->begin_point_shadow_pass(depth_shader, m_light_pos);
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, -1.0f, -6.0f));
-        model = glm::rotate(model, glm::radians(m_tower_rotation_angle), glm::vec3(0.0f, 1.0f, 0.0f));
-        depth_shader->set_mat4("model", model);
-        tower_b->draw(depth_shader);
+        int i = 0;
+        for (auto &tower : m_towers) {
+            auto *tower_model = resources->model(tower.first);
+
+            float rotation = 0.0f;
+            if (i > 3) { rotation += 180.0f; }
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, tower.second);
+            model = glm::rotate(model, glm::radians(m_tower_rotation_angle + rotation), glm::vec3(0.0f, 1.0f, 0.0f));
+            depth_shader->set_mat4("model", model);
+            tower_model->draw(depth_shader);
+        }
+
 
         graphics->end_point_shadow_pass();
     }
@@ -344,11 +329,10 @@ namespace app {
     }
 
     void MainController::draw() {
-        draw_tower_b();
+        draw_towers();
         draw_light_marker();
         draw_skybox();
         draw_ground();
-        draw_ground2();
     }
 
     void MainController::end_draw() {

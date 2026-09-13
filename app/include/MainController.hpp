@@ -3,6 +3,8 @@
 
 #include "glm/ext/vector_float3.hpp"
 #include <engine/core/Controller.hpp>
+#include <string>
+#include <vector>
 
 namespace app {
 
@@ -14,6 +16,18 @@ private:
         WAITINGB
     };
 
+    std::vector<std::pair<std::string, glm::vec3>> m_towers = {
+        {"tower_a", glm::vec3(-3.0f, -1.0f, -6.0f)},
+        {"tower_b", glm::vec3( 0.0f, -1.0f, -6.0f)},
+        {"tower_c", glm::vec3( 3.0f, -1.0f, -6.0f)},
+        {"tower_d", glm::vec3(5.0f, -1.0f, -6.0f)},
+        {"tower_d", glm::vec3(-3.0f, -1.0f, 1.0f)},
+        {"tower_a", glm::vec3( 0.0f, -1.0f, 1.0f)},
+        {"tower_c", glm::vec3( 3.0f, -1.0f, 1.0f)},
+        {"tower_b", glm::vec3(5.0f, -1.0f, 1.0f)},
+        
+    };
+
     LightEvent m_light_event = IDLE;
     float m_light_event_timer{0.0f};
     float m_light_intensity{1.0f};
@@ -23,7 +37,7 @@ private:
 
     void update_light_event();
 
-    glm::vec3 m_light_pos{glm::vec3(2.0f, 2.0f, -2.0f)};
+    glm::vec3 m_light_pos{glm::vec3(2.0f, 4.0f, -2.0f)};
 
     float m_tower_rotation_angle{0.0f};
     bool m_tower_finished_rotation{true};
@@ -40,15 +54,14 @@ private:
 
     void draw_ground();
 
-    void draw_ground2();
-
     void update_light();
 
     void draw_light_marker();
 
     void update_camera();
 
-    void draw_tower_b();
+    void draw_tower(std::string &model_name, glm::vec3 &position, float rotation_deg);
+    void draw_towers();
 
     void draw_shadow_pass();
 
