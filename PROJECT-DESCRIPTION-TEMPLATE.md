@@ -12,6 +12,7 @@
 {R} -> {rotate object}
 {ACTION_press_L} --- AFTER_2_SECONDS---Triggers---> {EVENT_blackout} ---> AFTER_3_SECONDS---Triggers---> {EVENT_back_to_normal}
 {0-5} -> {post processing effects}
+{B, G} -> {change colour}
 
 ## Features
 
