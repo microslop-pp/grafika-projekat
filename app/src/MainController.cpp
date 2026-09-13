@@ -73,6 +73,17 @@ namespace app {
         }
     }
 
+    void MainController::update_light_color() {
+        auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
+
+        if (platform->key(engine::platform::KeyId::KEY_B).is_down()) {
+            m_light_color = glm::vec3(0.0f, 0.0f, 1.0f);
+        }
+        if (platform->key(engine::platform::KeyId::KEY_G).is_down()) {
+            m_light_color = glm::vec3(0.0f, 1.0f, 0.0f);
+        }
+    }
+
     void MainController::update_light_event() {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
         float dt = platform->dt();
@@ -161,7 +172,7 @@ namespace app {
         shader->set_vec3("light_pos", m_light_pos);
         shader->set_vec3("light_direction", glm::vec3(2.0f, -3.0f, 2.0f));
         shader->set_vec3("light_color_dir", m_light_intensity * glm::vec3(1.0f, 1.0f, 1.0f));
-        shader->set_vec3("light_color", m_light_intensity * glm::vec3(0.0f, 1.0f, 0.0f));
+        shader->set_vec3("light_color", m_light_intensity * m_light_color);
         shader->set_vec3("view_pos", graphics->camera()->Position);
         shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
 
@@ -229,7 +240,7 @@ namespace app {
         shader->set_vec3("light_pos", m_light_pos);
         shader->set_vec3("light_direction", glm::vec3(2.0f, -3.0f, 2.0f));
         shader->set_vec3("light_color_dir", m_light_intensity * glm::vec3(1.0f, 1.0f, 1.0f));
-        shader->set_vec3("light_color", m_light_intensity * glm::vec3(0.0f, 1.0f, 0.0f));
+        shader->set_vec3("light_color", m_light_intensity * m_light_color);
         shader->set_vec3("view_pos", graphics->camera()->Position);
         shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
 
@@ -316,6 +327,7 @@ namespace app {
     void MainController::update() {
         update_camera();
         update_light();
+        update_light_color();
         update_light_event();
         set_effect();
         m_tower_rotation_angle = rotate_tower_b(m_tower_rotation_angle, &m_tower_finished_rotation);

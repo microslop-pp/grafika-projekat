@@ -39,6 +39,10 @@ private:
 
     glm::vec3 m_light_pos{glm::vec3(2.0f, 4.0f, -2.0f)};
 
+    glm::vec3 m_light_color{glm::vec3(0.0f, 1.0f, 0.0f)};
+
+    void update_light_color();
+
     float m_tower_rotation_angle{0.0f};
     bool m_tower_finished_rotation{true};
 
