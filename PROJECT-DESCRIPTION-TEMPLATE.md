@@ -1,33 +1,37 @@
-# {NAME-OF-THE-PROJECT}
+# {PROJECT2}
 
-{INDEX} - {STUDENT-FULL-NAME}  
+762022 - don't want my name indexed by search engines and scraped by clankers
 {PROJECT DESCRIPTION}
 
 ## Controls
 
-{BUTTON1} -> {ACTION1}  
-{BUTTON2} -> {ACTION2}  
-...  
-{BUTTONN} -> {ACTIONN}
+{escape} -> {quit}  
+{wasd} -> {move around}  
+{move mouse} -> {look around}
+{arrow keys, -, =} -> {move light cube}
+{R} -> {rotate object}
+{ACTION_press_L} --- AFTER_2_SECONDS---Triggers---> {EVENT_blackout} ---> AFTER_3_SECONDS---Triggers---> {EVENT_back_to_normal}
+{0-5} -> {post processing effects}
+{B, G} -> {change colour}
 
 ## Features
 
 ### Fundamental:
 
-[ ] Model with lighting
-[ ] Two types of lighting with customizable colors and movement through GUI or ACTIONS
-[ ] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
+[x] Model with lighting
+[x] Two types of lighting with customizable colors and movement through GUI or ACTIONS
+[x] {ACTION_X} --- AFTER_M_SECONDS---Triggers---> {EVENT_A} ---> AFTER_N_SECONDS---Triggers---> {EVENT_B}
 
 ### Group A:
 
-[ ] Frame-buffers with post-processing   
+[x] Frame-buffers with post-processing   
 [ ] Off-screen Anti-Aliasing  
 [ ] Parallax Mapping
 [ ] Bloom with the use of HDR
 
 ### Group B:
 [ ] Deferred Shading  
-[ ] Point Shadows  
+[x] Point Shadows  
 [ ] SSAO
 
 ### Engine improvement:
@@ -36,12 +40,14 @@
 
 ## Models:
 
-[link1]   
-[link2]
+[https://kenney.nl]   
+[https://free3d.com/3d-model/-rectangular-grass-patch--205749.html]
 
 ## Textures
 
 [link1]  
 [link2]
 
-{OTHER-RESOURCES}
+## Skyboxes
+
+https://www.magnific.com/free-photo/field-with-clouds_977520.htm#fromView=keyword&page=1&position=0&uuid=c393aaa6-0c97-4dbc-9ce6-97d29cd81040&track=ais_hybrid&query=Skybox

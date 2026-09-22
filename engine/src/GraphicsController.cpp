@@ -86,4 +86,40 @@ void GraphicsController::draw_skybox(const resources::Shader *shader, const reso
     CHECKED_GL_CALL(glDepthFunc, GL_LESS);// set depth function back to default
     CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, 0);
 }
+
+void GraphicsController::begin_post_processing() {
+    auto platform = engine::core::Controller::get<platform::PlatformController>();
+    const int width = platform->window()->width();
+    const int height = platform->window()->height();
+
+    if (m_post_processing.needs_resize(width, height)) {
+        m_post_processing.setup(width, height);
+    }
+    m_post_processing.begin();
+}
+
+void GraphicsController::end_post_processing() {
+    m_post_processing.end();
+}
+
+void GraphicsController::draw_post_processing(const resources::Shader *shader) {
+    m_post_processing.draw_quad(shader);
+}
+
+void GraphicsController::begin_point_shadow_pass(resources::Shader *depth_shader, glm::vec3 &light_pos) {
+    m_point_shadow_map.begin(depth_shader, light_pos);
+}
+
+void GraphicsController::end_point_shadow_pass() {
+    auto platform= engine::core::Controller::get<platform::PlatformController>();
+    m_point_shadow_map.end(platform->window()->width(), platform->window()->height());
+}
+
+void GraphicsController::bind_point_shadow_map(resources::Shader *shader, int texture_unit) {
+    shader->set_float("far_plane", m_point_shadow_map.far_plane());
+    shader->set_int("shadow_map", texture_unit);
+    CHECKED_GL_CALL(glActiveTexture, GL_TEXTURE0 + texture_unit);
+    CHECKED_GL_CALL(glBindTexture, GL_TEXTURE_CUBE_MAP, m_point_shadow_map.texture());
+}
+
 }// namespace engine::graphics

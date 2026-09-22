@@ -1,6 +1,28 @@
 {
   "resources": {
     "models": {
+      "tower_b": {
+        "path": "kenney_modular-buildings/Models/OBJ format/building-sample-tower-b.obj",
+        "flip_uvs": true
+      },
+      "tower_a": {
+        "path": "kenney_modular-buildings/Models/OBJ format/building-sample-tower-a.obj",
+        "flip_uvs": true
+      },
+      "tower_c": {
+        "path": "kenney_modular-buildings/Models/OBJ format/building-sample-tower-c.obj",
+        "flip_uvs": true
+      },
+      "tower_d": {
+        "path": "kenney_modular-buildings/Models/OBJ format/building-sample-tower-d.obj",
+        "flip_uvs": true
+      },
+      "light_cube": {
+        "path": "light_cube/light_cube.obj"
+      },
+      "grass": {
+        "path": "grass/10450_Rectangular_Grass_Patch_v1_iterations-2.obj"
+      }
     }
   },
   "window": {
