@@ -16,7 +16,9 @@ private:
         WAITINGB
     };
 
-    std::vector<std::pair<std::string, glm::vec3>> m_towers = {
+    struct Tower { std::string name; glm::vec3 position; };
+
+    std::vector<Tower> m_towers = {
         {"tower_a", glm::vec3(-3.0f, -1.0f, -6.0f)},
         {"tower_b", glm::vec3( 0.0f, -1.0f, -6.0f)},
         {"tower_c", glm::vec3( 3.0f, -1.0f, -6.0f)},
@@ -37,9 +39,16 @@ private:
 
     void update_light_event();
 
-    glm::vec3 m_light_pos{glm::vec3(2.0f, 4.0f, -2.0f)};
+    struct Light {
+        glm::vec3 pos;
+        glm::vec3 color;
+    };
 
-    glm::vec3 m_light_color{glm::vec3(0.0f, 1.0f, 0.0f)};
+    Light m_light = {
+        glm::vec3(2.0f, 4.0f, -2.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f)
+    };
+
 
     void update_light_color();
 

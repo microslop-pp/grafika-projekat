@@ -54,22 +54,22 @@ namespace app {
         float speed = 3.0f;
 
         if (platform->key(engine::platform::KeyId::KEY_RIGHT).is_down()) {
-            m_light_pos.x += speed * dt;
+            m_light.pos.x += speed * dt;
         }
         if (platform->key(engine::platform::KeyId::KEY_LEFT).is_down()) {
-            m_light_pos.x -= speed * dt;
+            m_light.pos.x -= speed * dt;
         }
         if (platform->key(engine::platform::KeyId::KEY_UP).is_down()) {
-            m_light_pos.z -= speed * dt;
+            m_light.pos.z -= speed * dt;
         }
         if (platform->key(engine::platform::KeyId::KEY_DOWN).is_down()) {
-            m_light_pos.z += speed * dt;
+            m_light.pos.z += speed * dt;
         }
         if (platform->key(engine::platform::KeyId::KEY_MINUS).is_down()) {
-            m_light_pos.y -= speed * dt;
+            m_light.pos.y -= speed * dt;
         }
         if (platform->key(engine::platform::KeyId::KEY_EQUAL).is_down()) {
-            m_light_pos.y += speed * dt;
+            m_light.pos.y += speed * dt;
         }
     }
 
@@ -77,10 +77,10 @@ namespace app {
         auto platform = engine::core::Controller::get<engine::platform::PlatformController>();
 
         if (platform->key(engine::platform::KeyId::KEY_B).is_down()) {
-            m_light_color = glm::vec3(0.0f, 0.0f, 1.0f);
+            m_light.color = glm::vec3(0.0f, 0.0f, 1.0f);
         }
         if (platform->key(engine::platform::KeyId::KEY_G).is_down()) {
-            m_light_color = glm::vec3(0.0f, 1.0f, 0.0f);
+            m_light.color = glm::vec3(0.0f, 1.0f, 0.0f);
         }
     }
 
@@ -169,10 +169,10 @@ namespace app {
 
         // light_color_dir is light colour for directional lighting
 
-        shader->set_vec3("light_pos", m_light_pos);
+        shader->set_vec3("light_pos", m_light.pos);
         shader->set_vec3("light_direction", glm::vec3(2.0f, -3.0f, 2.0f));
         shader->set_vec3("light_color_dir", m_light_intensity * glm::vec3(1.0f, 1.0f, 1.0f));
-        shader->set_vec3("light_color", m_light_intensity * m_light_color);
+        shader->set_vec3("light_color", m_light_intensity * m_light.color);
         shader->set_vec3("view_pos", graphics->camera()->Position);
         shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
 
@@ -187,7 +187,7 @@ namespace app {
         engine::resources::Model* light_cube = resources->model("light_cube");
         engine::resources::Shader* shader = resources->shader("basic");
 
-        auto light_pos = m_light_pos;
+        auto light_pos = m_light.pos;
 
         shader->use();
         shader->set_mat4("projection", graphics->projection_matrix());
@@ -237,10 +237,10 @@ namespace app {
 
         // light_color_dir is light colour for directional lighting
 
-        shader->set_vec3("light_pos", m_light_pos);
+        shader->set_vec3("light_pos", m_light.pos);
         shader->set_vec3("light_direction", glm::vec3(2.0f, -3.0f, 2.0f));
         shader->set_vec3("light_color_dir", m_light_intensity * glm::vec3(1.0f, 1.0f, 1.0f));
-        shader->set_vec3("light_color", m_light_intensity * m_light_color);
+        shader->set_vec3("light_color", m_light_intensity * m_light.color);
         shader->set_vec3("view_pos", graphics->camera()->Position);
         shader->set_mat3("normal_matrix", glm::transpose(glm::inverse(glm::mat3(model))));
 
@@ -254,7 +254,7 @@ namespace app {
         for (auto &tower : m_towers) {
             float roatation = 0.0f;
             if (i > 3) { roatation += 180.0f; }
-            draw_tower(tower.first, tower.second, roatation);
+            draw_tower(tower.name, tower.position, roatation);
             i++;
         }
     }
@@ -268,17 +268,17 @@ namespace app {
         // Shader
         auto *depth_shader = resources->shader("point_shadow_depth");
 
-        graphics->begin_point_shadow_pass(depth_shader, m_light_pos);
+        graphics->begin_point_shadow_pass(depth_shader, m_light.pos);
 
         int i = 0;
         for (auto &tower : m_towers) {
-            auto *tower_model = resources->model(tower.first);
+            auto *tower_model = resources->model(tower.name);
 
             float rotation = 0.0f;
             if (i > 3) { rotation += 180.0f; }
 
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, tower.second);
+            model = glm::translate(model, tower.position);
             model = glm::rotate(model, glm::radians(m_tower_rotation_angle + rotation), glm::vec3(0.0f, 1.0f, 0.0f));
             depth_shader->set_mat4("model", model);
             tower_model->draw(depth_shader);
